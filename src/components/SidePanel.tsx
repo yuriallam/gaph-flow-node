@@ -1,3 +1,4 @@
+import { setSelectedHabit } from '@/store/habitSlice';
 import { setHabit, setUsername } from '@/store/nodeSlice';
 import { RootState } from '@/store/store';
 import { HabitOptions, habitOptionToLabel } from '@/types/habit-node';
@@ -24,6 +25,7 @@ export default function SidePanel({
     const dispatch = useDispatch();
     const username = useSelector((state: RootState) => state.nodes.usernames[selectedNodeId || ''] || '');
     const habit = useSelector((state: RootState) => state.nodes.habits[selectedNodeId || ''] || '');
+    const selectedHabit = useSelector((state: RootState) => state.habit.selectedHabit);
     const [isOpen, setIsOpen] = useState(selectedNodeId != null ? true : false);
 
 
@@ -50,18 +52,19 @@ export default function SidePanel({
             if (selectedNodeType === 'userNode') {
                 setValue('username', username);
             } else if (selectedNodeType === 'habitNode') {
-                setValue('habit', habit);
+                setValue('habit', selectedHabit ?? habit);
             }
         } else {
             setNodeType('userNode');
         }
-    }, [selectedNodeId, selectedNodeType, username, habit, setValue]);
+    }, [selectedNodeId, selectedNodeType, username, habit, setValue, selectedHabit]);
 
     const handleAddOrUpdate = (data: NodeFormData) => {
         if (selectedNodeId) {
             if (nodeType === 'userNode') {
                 dispatch(setUsername({ id: selectedNodeId, username: data.username || '' }));
             } else if (nodeType === 'habitNode') {
+                dispatch(setSelectedHabit({ habit: data.habit || '', id: selectedNodeId }));
                 dispatch(setHabit({ id: selectedNodeId, habit: data.habit || '' }));
             }
             onDeselectNode();
