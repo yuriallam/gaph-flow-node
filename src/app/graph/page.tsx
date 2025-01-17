@@ -54,11 +54,7 @@ export default function MainNodeFlow() {
     else if (type === 'habitNode')
       dispatch(setHabit({ id, habit: properties.habit || '' }));
 
-    console.log('Adding node:', newNode);
-
     setNodes((nds) => [...nds, newNode]);
-
-    console.log(nodes);
 
     if (lastNodeId) {
       const newEdge: Edge = {
